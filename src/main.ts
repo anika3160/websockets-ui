@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 import { httpServer } from './http_server/index.js'
-import { startWebSocketServer } from './websocket_server/main.js'
+import { startWebSocketServer } from './websocket_server/websocket.js'
 
 dotenv.config()
 
