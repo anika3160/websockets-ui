@@ -1,6 +1,6 @@
 import { WebSocket } from 'ws'
 import { User } from '../../db/models/index.js'
-import { addUserToRoom, getRoomById, isRoomExists, isUserInRoom } from '../../db/services/roomService.js'
+import { addUserToRoom, getRoomById, isRoomExists, isUserInRoom } from '../../services/room.js'
 
 export function handleAddUserToRoom(ws: WebSocket, indexRoom: string | number, currentUser: User | null) {
   console.log('Add user to room event received:', indexRoom)

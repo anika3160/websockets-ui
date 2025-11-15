@@ -1,3 +1,4 @@
+import { Id } from './common.js'
 export enum shipsSizes {
   small = 'small',
   medium = 'medium',
@@ -6,9 +7,9 @@ export enum shipsSizes {
 }
 
 export interface Player {
-  userId: number | string
-  idPlayer: number | string
-  idGame: number | string
+  userId: Id
+  idPlayer: Id
+  idGame: Id
   ships: {
     position: {
       x: number

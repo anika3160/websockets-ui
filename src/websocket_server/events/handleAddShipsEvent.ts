@@ -1,12 +1,11 @@
 import { WebSocket } from 'ws'
-import { sendErrorResponse, sendTurnInfo } from '../responses/index.js'
-import { getUserSocket } from '../wsSessions.js'
-import { sendResponse } from '../responses/index.js'
-import { User } from '../../db/models/index.js'
-import { addShipsToPlayer } from '../../db/services/gameService.js'
-import { getGameById } from '../../db/services/gameService.js'
-import { Player } from '../../db/models/index.js'
+import { Player, User } from '../../db/models/index.js'
+import { getGameById
+} from '../../services/startGame.js'
+import { addShipsToPlayer } from '../../services/attack/addShipsToPlayer.js'
 import { manageGameEvents } from '../../utils/constants.js'
+import { sendErrorResponse, sendResponse, sendTurnInfo } from '../responses/index.js'
+import { getUserSocket } from '../wsSessions.js'
 
 export function handleAddShipsEvent(ws: WebSocket, dataObject: any, currentUser: User | null) {
   if (!currentUser) {
@@ -23,7 +22,7 @@ export function handleAddShipsEvent(ws: WebSocket, dataObject: any, currentUser:
       // random first player
       const firstPlayerIndex = Math.floor(Math.random() * game.players.length)
       const firstPlayer = game.players[firstPlayerIndex]
-      game.currentPlayer = firstPlayer.userId // save first player id
+      game.currentPlayer = firstPlayer.idPlayer // save first player session id
 
       // Send start game message to both players
       for (const player of game.players) {

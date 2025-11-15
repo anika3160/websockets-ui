@@ -1,20 +1,8 @@
 import { WebSocket } from 'ws'
-import { createRoom, getRoomsList } from '../../db/services/index.js'
+import { getRoomsList } from '../../services/index.js'
 import { manageGameEvents } from '../../utils/constants.js'
+import { getAllUserSockets } from '../wsSessions.js'
 import { sendResponse } from './utils.js'
-
-export function handleCreateRoom(ws: WebSocket) {
-  const room = createRoom()
-  if (!room.id) {
-    return
-  }
-  sendResponse(ws, manageGameEvents.createRoom, {
-    roomIndex: room.id,
-    error: false,
-    errorText: '',
-  })
-  return room.id
-}
 
 /*
 {
@@ -59,4 +47,13 @@ export function sendRoomsListResponse(ws: WebSocket, isOnlyOneUserInRoom: boolea
     }
   })
   sendResponse(ws, manageGameEvents.getRoomsList, roomsList)
+}
+
+export function broadcastRoomsListResponse(isOnlyOneUserInRoom: boolean = false) {
+  const sockets = getAllUserSockets()
+  for (const socket of sockets) {
+    if (socket.readyState === WebSocket.OPEN) {
+      sendRoomsListResponse(socket, isOnlyOneUserInRoom)
+    }
+  }
 }

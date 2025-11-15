@@ -1,7 +1,7 @@
 import { WebSocket } from 'ws'
-import { createUser, getUserByName } from '../../db/services/index.js'
+import { createUser, getUserByName } from '../../services/index.js'
 import { manageGameEvents } from '../../utils/constants.js'
-import { parseJSONData } from '../../utils/utils.js'
+import { parseJSONData } from '../../utils/index.js'
 import { sendResponse } from './utils.js'
 /*
  {

@@ -1,10 +1,9 @@
 export enum gameCommands {
-  add_ships = 'add_ships',
   attack = 'attack',
-  random_attack = 'random_attack',
+  randomAttack = 'random_attack',
   turn = 'turn',
 }
-  
+
 export enum manageGameEvents {
   registration = 'reg',
   createRoom = 'create_room',
@@ -13,5 +12,9 @@ export enum manageGameEvents {
   createGame = 'create_game',
   addShips = 'add_ships',
   startGame = 'start_game',
+  finishGame = 'finish',
+  updateWinners = 'update_winners',
 }
-  
+
+export const BOARD_MIN = 0
+export const BOARD_MAX = 9

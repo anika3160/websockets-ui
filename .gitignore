@@ -16,3 +16,6 @@ Thumbs.db
 npm-debug.log
 
 .env
+
+build/
+dist/

@@ -1,3 +1,5 @@
 export * from './handleCreateRoomEvent.js'
 export * from './handleAddUserToRoomEvent.js'
 export * from './handleAddShipsEvent.js'  
+export * from './handleRandomAttackEvent.js'
+export * from './handleAttackEvent.js'

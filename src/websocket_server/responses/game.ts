@@ -13,6 +13,12 @@ export function sendTurnInfo(ws: WebSocket, currentPlayer: string | number) {
     currentPlayer,
   })
 }
+
+export function sendFinishResponse(ws: WebSocket, winnerPlayerId: string | number) {
+  sendResponse(ws, manageGameEvents.finishGame, {
+    winPlayer: winnerPlayerId,
+  })
+}
 /*
 {
     type: "create_game", //send for both players in the room, after they are connected to the room

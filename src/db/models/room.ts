@@ -1,7 +1,8 @@
+import { Id } from './common.js'
 export interface Room {
-  id: number | string
+  id: Id
   users: {
     name: string
-    id: number | string 
-}[]
+    id: Id
+  }[]
 }

@@ -1,8 +1,12 @@
+import { Id } from './common.js'
 import { Player } from './player.js'
-
 export interface Game {
-  currentPlayer?: string | number
-  idGame: number | string
-  roomIndex: number | string
+  currentPlayer?: Id
+  idGame: Id
+  roomIndex: Id
   players: Player[]
+  attackedPositions?: Record<string, Set<string>>
+  isFinished?: boolean
+  winnerPlayerId?: Id
+  winnerUserId?: Id
 }

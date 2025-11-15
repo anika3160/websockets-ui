@@ -1,12 +1,10 @@
-
 import { WebSocket } from 'ws'
-import { sendErrorResponse } from '../responses/index.js'
-import { getUserSocket } from '../wsSessions.js'
 import { User } from '../../db/models/index.js'
-import { parseJSONData } from '../../utils/utils.js'
+import { createGame } from '../../services/startGame.js'
+import { parseJSONData } from '../../utils/index.js'
 import { handleAddUserToRoom } from '../handlers/addUsersToRoom.js'
-import { createGame } from '../../db/services/gameService.js'
-import { sendCreateGameResponse } from '../responses/index.js'
+import { sendCreateGameResponse, sendErrorResponse } from '../responses/index.js'
+import { getUserSocket } from '../wsSessions.js'
 
 export function handleAddUserToRoomEvent(ws: WebSocket, dataObject: any, currentUser: User | null) {
   if (!currentUser) {
@@ -23,7 +21,7 @@ export function handleAddUserToRoomEvent(ws: WebSocket, dataObject: any, current
   }
   const currentRoom = handleAddUserToRoom(ws, indexRoom, currentUser)
   if (!currentRoom) {
-    sendErrorResponse(ws, 'Room or user not found')
+    sendErrorResponse(ws, 'Room not found')
     return
   }
   // if 2 users in room, create game
@@ -33,10 +31,10 @@ export function handleAddUserToRoomEvent(ws: WebSocket, dataObject: any, current
     return
   }
   // send gameId to both players
-  for (const player of currentRoom.users) {
-    const wsPlayer = getUserSocket(player.id)
+  for (const player of game.players) {
+    const wsPlayer = getUserSocket(player.userId)
     if (wsPlayer) {
-      sendCreateGameResponse(wsPlayer, game.idGame, player.id)
+      sendCreateGameResponse(wsPlayer, game.idGame, player.idPlayer)
     }
   }
 }

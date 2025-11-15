@@ -13,3 +13,7 @@ export function getUserSocket(userId: string | number): WebSocket | undefined {
 export function removeUserSocket(userId: string | number) {
   delete userSockets[userId]
 }
+
+export function getAllUserSockets(): WebSocket[] {
+  return Object.values(userSockets)
+}
