@@ -1,6 +1,7 @@
-import { BOARD_MIN, BOARD_MAX } from '../../utils/constants.js'
+import { Coordinates } from '../../db/index.js'
+import { BOARD_MAX, BOARD_MIN } from '../../utils/constants.js'
 
-type ShipCells = { x: number; y: number }[]
+type ShipCells = Coordinates[]
 
 export const boardArea = {
   min: BOARD_MIN,

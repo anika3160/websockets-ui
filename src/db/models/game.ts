@@ -1,5 +1,11 @@
 import { Id } from './common.js'
 import { Player } from './player.js'
+
+export type Coordinates = {
+  x: number
+  y: number
+}
+
 export interface Game {
   currentPlayer?: Id
   idGame: Id

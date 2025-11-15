@@ -3,19 +3,7 @@ import { createUser, getUserByName, User } from '../../db/index.js'
 import { manageGameEvents } from '../../utils/constants.js'
 import { parseJSONData } from '../../utils/index.js'
 import { sendResponse } from './utils.js'
-/*
- {
-    type: "reg",
-    data:
-        {
-            name: <string>,
-            index: <number | string>,
-            error: <bool>,
-            errorText: <string>,
-        },
-    id: 0,
-}
-*/
+
 
 export function sendRegistrationResponse(ws: WebSocket, data: any): User | null {
   const registrationData = parseJSONData(data.data)

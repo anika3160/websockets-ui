@@ -9,7 +9,7 @@ export const parseJSONData = (data: any): any => {
   }
 }
 
-export const normalizeId = (value: number | string) => String(value)
+export const normalizeId = (value: Id) => String(value)
 
 export const idsEqual = (a: Id, b: Id) => normalizeId(a) === normalizeId(b)
 

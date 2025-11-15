@@ -1,10 +1,10 @@
 import { WebSocket } from 'ws'
-import { Game, removeGame, removeUserFromRooms } from '../db/index.js'
+import { Game, Id, removeGame, removeUserFromRooms } from '../db/index.js'
 import { incrementWinnerScore } from '../game/helpers/winner.js'
 import { broadcastRoomsListResponse, broadcastWinnersTable, sendFinishResponse } from './responses/index.js'
 import { getUserSocket } from './wsSessions.js'
 
-export function finalizeGame(game: Game, winnerPlayerId?: string | number, winnerUserId?: string | number) {
+export function finalizeGame(game: Game, winnerPlayerId?: Id, winnerUserId?: Id) {
   if (!game) {
     return
   }

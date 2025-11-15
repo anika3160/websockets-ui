@@ -4,33 +4,6 @@ import { manageGameEvents } from '../../utils/constants.js'
 import { getAllUserSockets } from '../wsSessions.js'
 import { sendResponse } from './utils.js'
 
-/*
-{
-    type: "update_room",
-    data:
-        [
-            {
-                roomId: <number | string>,
-                roomUsers:
-                    [
-                        {
-                            name: <string>,
-                            index: <number | string>,
-                        }
-                    ],
-            },
-        ],
-    id: 0,
-}
-*/
-/*
- interface Room {
-  id: number | string
-  users: {
-    name: string
-    id: number | string
-  }[]
-} */
 
 export function sendRoomsListResponse(ws: WebSocket, isOnlyOneUserInRoom: boolean = false) {
   const rooms = getRoomsList(isOnlyOneUserInRoom)

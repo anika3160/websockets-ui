@@ -1,14 +1,14 @@
 import { Game, getGameById, Id } from '../../db/index.js'
 import { AttackResult, AttackStatus, resolveAttack } from '../helpers/attack.js'
 
-type LaunchAttackInput = {
+type StartAttackInput = {
   gameId: Id
   attackerId: Id
   x: number
   y: number
 }
 
-type LaunchAttackResult = {
+type StartAttackResult = {
   game: Game
   attackResult: AttackResult
 }
@@ -16,7 +16,7 @@ type LaunchAttackResult = {
 export { AttackStatus }
 export type { AttackResult }
 
-export function startAttack({ gameId, attackerId, x, y }: LaunchAttackInput): LaunchAttackResult {
+export function startAttack({ gameId, attackerId, x, y }: StartAttackInput): StartAttackResult {
   const game = getGameById(gameId)
 
   if (!game) {

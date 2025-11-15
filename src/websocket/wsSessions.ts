@@ -1,16 +1,17 @@
 import { WebSocket } from 'ws'
+import { Id } from '../db/index.js'
 
 const userSockets: Record<string, WebSocket> = {}
 
-export function setUserSocket(userId: string | number, ws: WebSocket) {
+export function setUserSocket(userId: Id, ws: WebSocket) {
   userSockets[userId] = ws
 }
 
-export function getUserSocket(userId: string | number): WebSocket | undefined {
+export function getUserSocket(userId: Id): WebSocket | undefined {
   return userSockets[userId]
 }
 
-export function removeUserSocket(userId: string | number) {
+export function removeUserSocket(userId: Id) {
   delete userSockets[userId]
 }
 

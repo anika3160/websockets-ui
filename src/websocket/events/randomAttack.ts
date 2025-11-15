@@ -2,39 +2,13 @@ import { WebSocket } from 'ws'
 import { getGameById } from '../../db/index.js'
 import { startAttack } from '../../game/actions/startAttack.js'
 import { getPlayerAttackHistory } from '../../game/helpers/attack.js'
-import { boardArea } from '../../game/helpers/ship.js'
+import { getRandomAvailableCell } from '../../game/helpers/board.js'
 import { validatePlayerRequestData } from '../../utils/validation/gameRequestValidation.js'
 import { sendErrorResponse } from '../responses/index.js'
 import { dispatchAttackResult } from './attack.js'
 
-type GameCoordinate = { x: number; y: number }
-
 function parseEventData(data: any): unknown {
   return typeof data?.data === 'string' ? JSON.parse(data.data) : data?.data
-}
-
-function collectAvailableCells(attackedPositions: Set<string>): GameCoordinate[] {
-  const cells: GameCoordinate[] = []
-  const { min, max } = boardArea
-
-  for (let x = min; x <= max; x += 1) {
-    for (let y = min; y <= max; y += 1) {
-      const key = `${x}_${y}`
-      if (!attackedPositions.has(key)) {
-        cells.push({ x, y })
-      }
-    }
-  }
-
-  return cells
-}
-
-function getRandomAvailableCell(attackedPositions: Set<string>): GameCoordinate | null {
-  const cells = collectAvailableCells(attackedPositions)
-  if (cells.length === 0) return null
-
-  const index = Math.floor(Math.random() * cells.length)
-  return cells[index]
 }
 
 export function randomAttackEvent(ws: WebSocket, data: any) {

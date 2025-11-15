@@ -1,4 +1,5 @@
 import { Id } from './common.js'
+import { Coordinates } from './game.js'
 export enum shipsSizes {
   small = 'small',
   medium = 'medium',
@@ -11,13 +12,10 @@ export interface Player {
   idPlayer: Id
   idGame: Id
   ships: {
-    position: {
-      x: number
-      y: number
-    }
+    position: Coordinates
     direction: boolean
     length: number
     type: shipsSizes
-    hits?: { x: number; y: number }[]
+    hits?: Coordinates[]
   }[]
 }

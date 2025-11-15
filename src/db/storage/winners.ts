@@ -1,5 +1,6 @@
+import { Id } from '../models/index.js'
 export interface WinnerScore {
-  userId: number | string
+  userId: Id
   wins: number
 }
 

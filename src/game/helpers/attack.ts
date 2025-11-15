@@ -1,9 +1,9 @@
-import { Game } from '../../db/index.js'
+import { Coordinates, Game, Id } from '../../db/index.js'
 import { normalizeId } from '../../utils/index.js'
 import { isWithinBoard } from '../../utils/validation/shipValidation.js'
 import { getMissCellsAroundShip, getShipCells } from './ship.js'
 
-export function getPlayerAttackHistory(game: Game, playerId: string | number): Set<string> {
+export function getPlayerAttackHistory(game: Game, playerId: Id): Set<string> {
   if (!game.attackedPositions) {
     game.attackedPositions = {}
   }
@@ -14,10 +14,8 @@ export function getPlayerAttackHistory(game: Game, playerId: string | number): S
   return game.attackedPositions[playerKey]
 }
 
-export interface AttackPayload {
-  x: number
-  y: number
-  attackerId: string | number
+export interface AttackPayload extends Coordinates {
+  attackerId: Id
 }
 
 export enum AttackStatus {
@@ -27,19 +25,19 @@ export enum AttackStatus {
 }
 
 export interface AttackResult {
-  position: { x: number; y: number }
-  currentPlayer: string | number
-  nextPlayerId?: string | number
+  position: Coordinates
+  currentPlayer: Id
+  nextPlayerId?: Id
   status: AttackStatus[keyof AttackStatus]
-  missCells?: { x: number; y: number }[]
+  missCells?: Coordinates[]
   isFinished: boolean
-  winnerPlayerId?: string | number
-  winnerUserId?: string | number
+  winnerPlayerId?: Id
+  winnerUserId?: Id
 }
 
 export function resolveAttack(game: Game, { x, y, attackerId }: AttackPayload): AttackResult {
   if (!Number.isFinite(x) || !Number.isFinite(y)) {
-    throw new Error('Invalid coordinates')
+    throw new Error('Invalid Coordinates')
   }
   if (!isWithinBoard(x, y)) {
     throw new Error('Attack out of bounds')
@@ -65,7 +63,7 @@ export function resolveAttack(game: Game, { x, y, attackerId }: AttackPayload): 
   }
 
   let status: AttackStatus = AttackStatus.miss
-  let killedShipCells: { x: number; y: number }[] | undefined
+  let killedShipCells: Coordinates[] | undefined
 
   for (const ship of defender.ships) {
     const cells = getShipCells(ship)
