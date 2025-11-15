@@ -1,2 +1,2 @@
-export * from './registration.js'
-export * from './addUsersToRoom.js'
+export * from './userRegistration.js'
+export * from './roomMembership.js'

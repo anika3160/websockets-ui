@@ -5,7 +5,7 @@ import { getPlayerAttackHistory } from '../../services/game.js'
 import { getGameById } from '../../services/startGame.js'
 import { validatePlayerRequestData } from '../../utils/validation/gameRequestValidation.js'
 import { sendErrorResponse } from '../responses/index.js'
-import { executeAttack } from './handleAttackEvent.js'
+import { executeAttack } from './attack.js'
 
 type GameCoordinate = { x: number; y: number }
 

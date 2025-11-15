@@ -2,7 +2,7 @@ import { WebSocket } from 'ws'
 import { User } from '../../db/models/index.js'
 import { createGame } from '../../services/startGame.js'
 import { parseJSONData } from '../../utils/index.js'
-import { handleAddUserToRoom } from '../handlers/addUsersToRoom.js'
+import { handleAddUserToRoom } from '../handlers/roomMembership.js'
 import { sendCreateGameResponse, sendErrorResponse } from '../responses/index.js'
 import { getUserSocket } from '../wsSessions.js'
 
