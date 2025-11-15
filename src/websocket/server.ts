@@ -7,7 +7,7 @@ import { addShipsEvent, addUserToRoomEvent, createRoomAndAssignUser } from './ev
 import { randomAttackEvent } from './events/randomAttack.js'
 import { registerUser } from './events/userRegistration.js'
 import { sendErrorResponse } from './responses/error.js'
-import { sendRoomsListResponse } from './responses/index.js'
+import { broadcastRoomsListResponse, sendRoomsListResponse } from './responses/index.js'
 import { removeUserSocket } from './wsSessions.js'
 
 type IncomingMessage = {
@@ -35,7 +35,7 @@ function routeMessage(ws: WebSocket, data: IncomingMessage, currentUser: User | 
   switch (data.type) {
     case manageGameEvents.createRoom:
       createRoomAndAssignUser(currentUser)
-      sendRoomsListResponse(ws)
+      broadcastRoomsListResponse()
       return currentUser
 
     case manageGameEvents.getRoomsList:
