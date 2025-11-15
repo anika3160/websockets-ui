@@ -1,20 +1,16 @@
 import { WebSocket } from 'ws'
-import { Game, User } from '../../db/models/index.js'
-import { handleAttack } from '../../services/game.js'
-import { getGameById } from '../../services/startGame.js'
+import { Game, User } from '../../db/index.js'
+import type { AttackResult } from '../../game/actions/startAttack.js'
+import { startAttack } from '../../game/actions/startAttack.js'
 import { gameCommands } from '../../utils/constants.js'
 import { validateAttackRequestData } from '../../utils/validation/gameRequestValidation.js'
 import { finalizeGame } from '../gameLifecycle.js'
 import { sendErrorResponse, sendResponse, sendTurnInfo } from '../responses/index.js'
 import { getUserSocket } from '../wsSessions.js'
 
-export function handleAttackEvent(ws: WebSocket, dataObject: any, currentUser: User | null) {
-  if (!currentUser) {
-    sendErrorResponse(ws, 'User not registered')
-    return
-  }
+export function attackEvent(ws: WebSocket, data: any) {
   try {
-    const jsonData = typeof dataObject.data === 'string' ? JSON.parse(dataObject.data) : dataObject.data
+    const jsonData = typeof data.data === 'string' ? JSON.parse(data.data) : data.data
     let attackData
     try {
       attackData = validateAttackRequestData(jsonData)
@@ -23,80 +19,46 @@ export function handleAttackEvent(ws: WebSocket, dataObject: any, currentUser: U
       return
     }
     const { gameId, x, y, indexPlayer } = attackData
-    const game = getGameById(gameId)
-    if (!game) {
-      sendErrorResponse(ws, 'Game not found')
-      return
-    }
-    executeAttack(ws, {
-      game,
+    const { game, attackResult } = startAttack({
       gameId,
       attackerId: indexPlayer,
       x,
       y,
     })
+    dispatchAttackResult(game, attackResult)
   } catch (err: any) {
     console.error('Attack error:', err)
     sendErrorResponse(ws, err?.message || 'Error processing attack')
   }
 }
 
-interface ExecuteAttackPayload {
-  game: Game
-  gameId: string | number
-  attackerId: string | number
-  x: number
-  y: number
-}
-
-export function executeAttack(ws: WebSocket, payload: ExecuteAttackPayload) {
-  const { game, gameId, attackerId, x, y } = payload
-  if (!game) {
-    sendErrorResponse(ws, 'Game not found')
-    return
+export function dispatchAttackResult(game: Game, payload: AttackResult) {
+  const responsePayload = {
+    position: payload.position,
+    currentPlayer: payload.currentPlayer,
+    status: payload.status,
+    gameId: game.idGame,
   }
-  if (game.currentPlayer && String(game.currentPlayer) !== String(attackerId)) {
-    sendErrorResponse(ws, 'Not your turn')
-    return
-  }
-  try {
-    const result = handleAttack({
-      gameId,
-      indexPlayer: attackerId,
-      x,
-      y,
-    })
-    const isFinished = Boolean(result.isFinished)
-    const responsePayload = {
-      position: result.position,
-      currentPlayer: result.currentPlayer,
-      status: result.status,
-      gameId,
-    }
-    for (const player of game.players) {
-      const playerSocket = getUserSocket(player.userId)
-      if (playerSocket) {
-        sendResponse(playerSocket, gameCommands.attack, responsePayload)
-        if (result.status === 'killed' && Array.isArray(result.missCells)) {
-          for (const missCell of result.missCells) {
-            sendResponse(playerSocket, gameCommands.attack, {
-              position: missCell,
-              currentPlayer: result.currentPlayer,
-              status: 'miss',
-              gameId,
-            })
-          }
-        }
-        if (!isFinished && result.nextPlayerId) {
-          sendTurnInfo(playerSocket, result.nextPlayerId)
+  for (const player of game.players) {
+    const playerSocket = getUserSocket(player.userId)
+    if (playerSocket) {
+      sendResponse(playerSocket, gameCommands.attack, responsePayload)
+      if (payload.status === 'killed' && Array.isArray(payload.missCells)) {
+        for (const missCell of payload.missCells) {
+          sendResponse(playerSocket, gameCommands.attack, {
+            position: missCell,
+            currentPlayer: payload.currentPlayer,
+            status: 'miss',
+            gameId: game.idGame,
+          })
         }
       }
+      if (!payload.isFinished && payload.nextPlayerId) {
+        sendTurnInfo(playerSocket, payload.nextPlayerId)
+      }
     }
-    if (isFinished && result.winnerPlayerId && result.winnerUserId) {
-      finalizeGame(game, result.winnerPlayerId, result.winnerUserId)
-    }
-  } catch (err: any) {
-    console.error('executeAttack error:', err)
-    sendErrorResponse(ws, err?.message || 'Error processing attack')
+  }
+  if (payload.isFinished && payload.winnerPlayerId && payload.winnerUserId) {
+    finalizeGame(game, payload.winnerPlayerId, payload.winnerUserId)
   }
 }

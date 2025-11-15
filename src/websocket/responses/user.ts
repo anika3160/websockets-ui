@@ -1,5 +1,5 @@
 import { WebSocket } from 'ws'
-import { createUser, getUserByName } from '../../services/index.js'
+import { createUser, getUserByName, User } from '../../db/index.js'
 import { manageGameEvents } from '../../utils/constants.js'
 import { parseJSONData } from '../../utils/index.js'
 import { sendResponse } from './utils.js'
@@ -17,8 +17,8 @@ import { sendResponse } from './utils.js'
 }
 */
 
-export function sendRegistrationResponse(ws: WebSocket, dataObject: any) {
-  const registrationData = parseJSONData(dataObject.data)
+export function sendRegistrationResponse(ws: WebSocket, data: any): User | null {
+  const registrationData = parseJSONData(data.data)
   const { name, password } = registrationData || {}
 
   if (!name || !password) {

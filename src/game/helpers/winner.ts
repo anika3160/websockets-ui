@@ -1,7 +1,5 @@
-import { Id } from '../db/models/index.js'
-import { users } from '../db/storage/users.js'
-import { winners } from '../db/storage/winners.js'
-import { idsEqual } from '../utils/index.js'
+import { Id, users, winners } from '../../db/index.js'
+import { idsEqual } from '../../utils/index.js'
 
 export function incrementWinnerScore(userId: Id) {
   const existing = winners.find((entry) => idsEqual(entry.userId, userId))

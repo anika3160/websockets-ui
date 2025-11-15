@@ -1,5 +1,5 @@
 import { WebSocket } from 'ws'
-import { getWinnersTable } from '../../services/winner.js'
+import { getWinnersTable } from '../../game/helpers/winner.js'
 import { manageGameEvents } from '../../utils/constants.js'
 import { getAllUserSockets } from '../wsSessions.js'
 import { sendResponse } from './utils.js'

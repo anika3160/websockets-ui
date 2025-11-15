@@ -1,6 +1,6 @@
-import { User } from '../db/models/index.js'
-import { users } from '../db/storage/users.js'
-import { validateUser } from '../utils/validation/userValidation.js'
+import { validateUser } from '../../utils/validation/userValidation.js'
+import { User } from '../models/index.js'
+import { users } from '../storage/users.js'
 
 export function createUser(name: string, password: string): User {
   validateUser(name, password)

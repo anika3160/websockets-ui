@@ -1,5 +1,5 @@
 import { WebSocket } from 'ws'
-import { getRoomsList } from '../../services/index.js'
+import { getRoomsList } from '../../db/index.js'
 import { manageGameEvents } from '../../utils/constants.js'
 import { getAllUserSockets } from '../wsSessions.js'
 import { sendResponse } from './utils.js'

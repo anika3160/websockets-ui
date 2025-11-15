@@ -1,4 +1,4 @@
-import { Id } from '../../db/models/index.js'
+import { Id } from '../../db/index.js'
 import { isNumber } from '../index.js'
 
 interface PlayerRequestData {

@@ -1,16 +1,16 @@
 import { WebSocket } from 'ws'
-import { User } from '../../db/models/index.js'
-import { boardArea } from '../../services/attack/shipUtils.js'
-import { getPlayerAttackHistory } from '../../services/game.js'
-import { getGameById } from '../../services/startGame.js'
+import { getGameById } from '../../db/index.js'
+import { startAttack } from '../../game/actions/startAttack.js'
+import { getPlayerAttackHistory } from '../../game/helpers/attack.js'
+import { boardArea } from '../../game/helpers/ship.js'
 import { validatePlayerRequestData } from '../../utils/validation/gameRequestValidation.js'
 import { sendErrorResponse } from '../responses/index.js'
-import { executeAttack } from './attack.js'
+import { dispatchAttackResult } from './attack.js'
 
 type GameCoordinate = { x: number; y: number }
 
-function parseEventData(dataObject: any): unknown {
-  return typeof dataObject?.data === 'string' ? JSON.parse(dataObject.data) : dataObject?.data
+function parseEventData(data: any): unknown {
+  return typeof data?.data === 'string' ? JSON.parse(data.data) : data?.data
 }
 
 function collectAvailableCells(attackedPositions: Set<string>): GameCoordinate[] {
@@ -37,14 +37,9 @@ function getRandomAvailableCell(attackedPositions: Set<string>): GameCoordinate 
   return cells[index]
 }
 
-export function handleRandomAttackEvent(ws: WebSocket, dataObject: any, currentUser: User | null) {
-  if (!currentUser) {
-    sendErrorResponse(ws, 'User not registered')
-    return
-  }
-
+export function randomAttackEvent(ws: WebSocket, data: any) {
   try {
-    const jsonData = parseEventData(dataObject)
+    const jsonData = parseEventData(data)
     const { gameId, indexPlayer } = validatePlayerRequestData(jsonData, 'Invalid data for random attack')
 
     const game = getGameById(gameId)
@@ -68,13 +63,13 @@ export function handleRandomAttackEvent(ws: WebSocket, dataObject: any, currentU
 
     const { x, y } = randomCell
 
-    executeAttack(ws, {
-      game,
+    const { game: updatedGame, attackResult } = startAttack({
       gameId,
       attackerId: indexPlayer,
       x,
       y,
     })
+    dispatchAttackResult(updatedGame, attackResult)
   } catch (err: any) {
     console.error('Random attack error:', err)
     sendErrorResponse(ws, err?.message || 'Failed to perform random attack')

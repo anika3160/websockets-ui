@@ -1,4 +1,4 @@
-import { Id } from '../db/models/index.js'
+import { Id } from '../db/index.js'
 
 export const parseJSONData = (data: any): any => {
   try {

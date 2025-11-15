@@ -1,8 +1,8 @@
-import { Id, Room } from '../db/models/index.js'
-import { rooms } from '../db/storage/rooms.js'
-import { idsEqual } from '../utils/index.js'
+import { idsEqual } from '../../utils/index.js'
+import { Id, Room } from '../models/index.js'
+import { rooms } from '../storage/rooms.js'
 
-export function createRoom(): Room {
+export function createNewEmptyRoomAndSaveInDB(): Room {
   const id = rooms.length + 1
   const room: Room = {
     id,
@@ -13,16 +13,12 @@ export function createRoom(): Room {
   return room
 }
 
-function findRoomById(id: Id): Room | undefined {
+export function getRoomById(id: Id): Room | undefined {
   return rooms.find((room) => idsEqual(room.id, id))
 }
 
 export function isRoomExists(id: Id): boolean {
-  return Boolean(findRoomById(id))
-}
-
-export function getRoomById(id: Id): Room | undefined {
-  return findRoomById(id)
+  return Boolean(getRoomById(id))
 }
 
 export function getUsersInRoomByRoomId(id: Id) {
@@ -36,8 +32,8 @@ export function isUserInRoom(roomId: Id, userId: Id): boolean {
   return room.users.some((user) => idsEqual(user.id, userId))
 }
 
-export function addUserToRoom(roomId: Id, user: { name: string; id: Id }): void {
-  const room = findRoomById(roomId)
+export function addUserToRoom(roomId: Id, user: { name: string; id: Id }): Room {
+  const room = getRoomById(roomId)
   if (!room) {
     throw new Error('Room not found')
   }
@@ -55,9 +51,11 @@ export function addUserToRoom(roomId: Id, user: { name: string; id: Id }): void 
     name: user.name,
     id: user.id,
   })
+
+  return room
 }
 
-export const getRoomsList = (isOnlyOneUserInRoom: boolean = false) => {
+export function getRoomsList(isOnlyOneUserInRoom: boolean = false) {
   if (isOnlyOneUserInRoom) {
     return rooms.filter((room) => room.users?.length === 1)
   }

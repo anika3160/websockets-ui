@@ -1,21 +1,17 @@
-
 import { WebSocket } from 'ws'
+import { Id } from '../../db/index.js'
 
 interface ServerResponse {
   type: string
   data: string
-  id: number | string
+  id: Id
 }
 
-function createServerResponse(
-  type: string,
-  data: object,
-  id: number | string = 0,
-): ServerResponse {
+function createServerResponse(type: string, data: object, id: Id = 0): ServerResponse {
   return {
     type,
     data: JSON.stringify(data),
-    id
+    id,
   }
 }
 

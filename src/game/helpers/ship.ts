@@ -27,7 +27,7 @@ export function getMissCellsAroundShip(shipCells: ShipCells): ShipCells {
   const boardSize = BOARD_MAX - BOARD_MIN + 1
 
   const hasShip: boolean[][] = Array.from({ length: boardSize }, () => Array(boardSize).fill(false))
-  
+
   const isMiss: boolean[][] = Array.from({ length: boardSize }, () => Array(boardSize).fill(false))
 
   for (const cell of shipCells) {

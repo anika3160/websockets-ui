@@ -1,8 +1,7 @@
-import { Game } from '../db/models/game.js'
-import { games } from '../db/storage/games.js'
-import { normalizeId } from '../utils/index.js'
-import { getMissCellsAroundShip, getShipCells } from './attack/shipUtils.js'
-import { isWithinBoard } from '../utils/validation/shipValidation.js'
+import { Game } from '../../db/index.js'
+import { normalizeId } from '../../utils/index.js'
+import { isWithinBoard } from '../../utils/validation/shipValidation.js'
+import { getMissCellsAroundShip, getShipCells } from './ship.js'
 
 export function getPlayerAttackHistory(game: Game, playerId: string | number): Set<string> {
   if (!game.attackedPositions) {
@@ -15,20 +14,19 @@ export function getPlayerAttackHistory(game: Game, playerId: string | number): S
   return game.attackedPositions[playerKey]
 }
 
-interface AttackPayload {
-  gameId: string | number
+export interface AttackPayload {
   x: number
   y: number
-  indexPlayer: string | number
+  attackerId: string | number
 }
 
-enum AttackStatus {
+export enum AttackStatus {
   miss = 'miss',
   shot = 'shot',
   killed = 'killed',
 }
 
-interface AttackResult {
+export interface AttackResult {
   position: { x: number; y: number }
   currentPlayer: string | number
   nextPlayerId?: string | number
@@ -39,7 +37,7 @@ interface AttackResult {
   winnerUserId?: string | number
 }
 
-export function handleAttack({ gameId, x, y, indexPlayer }: AttackPayload): AttackResult {
+export function resolveAttack(game: Game, { x, y, attackerId }: AttackPayload): AttackResult {
   if (!Number.isFinite(x) || !Number.isFinite(y)) {
     throw new Error('Invalid coordinates')
   }
@@ -47,16 +45,11 @@ export function handleAttack({ gameId, x, y, indexPlayer }: AttackPayload): Atta
     throw new Error('Attack out of bounds')
   }
 
-  const game = games.find((g) => normalizeId(g.idGame) === normalizeId(gameId))
-  if (!game) {
-    throw new Error('Game not found')
-  }
-
-  if (game.currentPlayer && normalizeId(game.currentPlayer) !== normalizeId(indexPlayer)) {
+  if (game.currentPlayer && normalizeId(game.currentPlayer) !== normalizeId(attackerId)) {
     throw new Error('Not your turn')
   }
 
-  const playerShots = getPlayerAttackHistory(game, indexPlayer)
+  const playerShots = getPlayerAttackHistory(game, attackerId)
   const shotKey = `${x}_${y}`
 
   if (playerShots.has(shotKey)) {
@@ -64,8 +57,8 @@ export function handleAttack({ gameId, x, y, indexPlayer }: AttackPayload): Atta
   }
   playerShots.add(shotKey)
 
-  const attacker = game.players.find((p) => normalizeId(p.idPlayer) === normalizeId(indexPlayer))
-  const defender = game.players.find((p) => normalizeId(p.idPlayer) !== normalizeId(indexPlayer))
+  const attacker = game.players.find((p) => normalizeId(p.idPlayer) === normalizeId(attackerId))
+  const defender = game.players.find((p) => normalizeId(p.idPlayer) !== normalizeId(attackerId))
 
   if (!attacker || !defender) {
     throw new Error('Players not found')

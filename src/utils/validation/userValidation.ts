@@ -1,4 +1,4 @@
-import { users } from '../../db/storage/users.js'
+import { users } from '../../db/index.js'
 
 export function validateUserName(name: unknown) {
   if (typeof name !== 'string' || name.trim() === '') {
