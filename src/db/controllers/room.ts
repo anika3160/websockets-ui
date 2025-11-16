@@ -1,4 +1,4 @@
-import { idsEqual } from '../../utils/index.js'
+import { isIdsEqual } from '../../utils/index.js'
 import { Id, Room } from '../models/index.js'
 import { rooms } from '../storage/rooms.js'
 
@@ -14,7 +14,7 @@ export function createNewEmptyRoomAndSaveInDB(): Room {
 }
 
 export function getRoomById(id: Id): Room | undefined {
-  return rooms.find((room) => idsEqual(room.id, id))
+  return rooms.find((room) => isIdsEqual(room.id, id))
 }
 
 export function isRoomExists(id: Id): boolean {
@@ -29,7 +29,7 @@ export function isUserInRoom(roomId: Id, userId: Id): boolean {
   const room = getRoomById(roomId)
   if (!room) return false
 
-  return room.users.some((user) => idsEqual(user.id, userId))
+  return room.users.some((user) => isIdsEqual(user.id, userId))
 }
 
 export function addUserToRoom(roomId: Id, user: { name: string; id: Id }): Room {
@@ -38,7 +38,7 @@ export function addUserToRoom(roomId: Id, user: { name: string; id: Id }): Room 
     throw new Error('Room not found')
   }
 
-  const userAlreadyInRoom = room.users.some((u) => idsEqual(u.id, user.id))
+  const userAlreadyInRoom = room.users.some((u) => isIdsEqual(u.id, user.id))
   if (userAlreadyInRoom) {
     throw new Error('User already in room')
   }
@@ -69,7 +69,7 @@ export function removeUserFromRooms(userId: Id): boolean {
     const room = rooms[i]
     const initialLength = room.users.length
 
-    const filteredUsers = room.users.filter((user) => !idsEqual(user.id, userId))
+    const filteredUsers = room.users.filter((user) => !isIdsEqual(user.id, userId))
 
     if (filteredUsers.length !== initialLength) {
       room.users = filteredUsers

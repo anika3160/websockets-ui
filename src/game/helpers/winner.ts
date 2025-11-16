@@ -1,8 +1,8 @@
 import { Id, users, winners } from '../../db/index.js'
-import { idsEqual } from '../../utils/index.js'
+import { isIdsEqual } from '../../utils/index.js'
 
 export function incrementWinnerScore(userId: Id) {
-  const existing = winners.find((entry) => idsEqual(entry.userId, userId))
+  const existing = winners.find((entry) => isIdsEqual(entry.userId, userId))
 
   if (existing) {
     existing.wins += 1
@@ -16,7 +16,7 @@ export function incrementWinnerScore(userId: Id) {
 }
 
 const getUserNameById = (id: Id): string => {
-  const user = users.find((u) => idsEqual(u.id, id))
+  const user = users.find((u) => isIdsEqual(u.id, id))
   return user?.name ?? `User #${id}`
 }
 

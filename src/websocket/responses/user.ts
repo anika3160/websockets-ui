@@ -2,7 +2,7 @@ import { WebSocket } from 'ws'
 import { createUser, getUserByName, User } from '../../db/index.js'
 import { manageGameEvents } from '../../utils/constants.js'
 import { parseJSONData } from '../../utils/index.js'
-import { sendResponse } from './utils.js'
+import { sendPersonalResponse } from './utils.js'
 
 
 export function sendRegistrationResponse(ws: WebSocket, data: any): User | null {
@@ -10,7 +10,7 @@ export function sendRegistrationResponse(ws: WebSocket, data: any): User | null 
   const { name, password } = registrationData || {}
 
   if (!name || !password) {
-    sendResponse(ws, manageGameEvents.registration, {
+    sendPersonalResponse(ws, manageGameEvents.registration, {
       name,
       index: '',
       error: true,
@@ -20,7 +20,7 @@ export function sendRegistrationResponse(ws: WebSocket, data: any): User | null 
   }
 
   if (getUserByName(name)) {
-    sendResponse(ws, manageGameEvents.registration, {
+    sendPersonalResponse(ws, manageGameEvents.registration, {
       name,
       index: '',
       error: true,
@@ -30,7 +30,7 @@ export function sendRegistrationResponse(ws: WebSocket, data: any): User | null 
   }
 
   const user = createUser(name, password)
-  sendResponse(ws, manageGameEvents.registration, {
+  sendPersonalResponse(ws, manageGameEvents.registration, {
     name,
     index: user.id,
     error: false,

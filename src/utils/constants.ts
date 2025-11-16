@@ -1,6 +1,6 @@
 export enum gameCommands {
   attack = 'attack',
-  randomAttack = 'random_attack',
+  randomAttack = 'randomAttack',
   turn = 'turn',
 }
 
@@ -9,6 +9,7 @@ export enum manageGameEvents {
   createRoom = 'create_room',
   getRoomsList = 'update_room',
   addUserToRoom = 'add_user_to_room',
+  singlePlay = 'single_play',
   createGame = 'create_game',
   addShips = 'add_ships',
   startGame = 'start_game',
@@ -18,3 +19,4 @@ export enum manageGameEvents {
 
 export const BOARD_MIN = 0
 export const BOARD_MAX = 9
+

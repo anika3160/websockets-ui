@@ -1,8 +1,8 @@
 import { Game, Id, Player } from '../../db/index.js'
-import { idsEqual } from '../../utils/index.js'
+import { isIdsEqual } from '../../utils/index.js'
 
 const findPlayerInGame = (game: Game, playerId: Id): Player | undefined =>
-  game.players.find((p) => idsEqual(p.idPlayer, playerId))
+  game.players.find((p) => isIdsEqual(p.idPlayer, playerId))
 
 export function assignShipsToPlayer(game: Game, playerId: Id, ships: Player['ships']): Player {
   const player = findPlayerInGame(game, playerId)

@@ -11,6 +11,7 @@ export interface Player {
   userId: Id
   idPlayer: Id
   idGame: Id
+  isBot?: boolean
   ships: {
     position: Coordinates
     direction: boolean

@@ -1,19 +1,14 @@
 import { WebSocket } from 'ws'
 import { getWinnersTable } from '../../game/helpers/winner.js'
 import { manageGameEvents } from '../../utils/constants.js'
-import { getAllUserSockets } from '../wsSessions.js'
-import { sendResponse } from './utils.js'
+import { broadcastResponse, sendPersonalResponse } from './utils.js'
 
 export function sendWinnersTableResponse(ws: WebSocket) {
   const winners = getWinnersTable()
-  sendResponse(ws, manageGameEvents.updateWinners, winners)
+  sendPersonalResponse(ws, manageGameEvents.updateWinners, winners)
 }
 
 export function broadcastWinnersTable() {
-  const sockets = getAllUserSockets()
-  for (const socket of sockets) {
-    if (socket.readyState === WebSocket.OPEN) {
-      sendWinnersTableResponse(socket)
-    }
-  }
+  const winners = getWinnersTable()
+  broadcastResponse(manageGameEvents.updateWinners, winners)
 }

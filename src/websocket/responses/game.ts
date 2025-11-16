@@ -1,22 +1,30 @@
 import { WebSocket } from 'ws'
-import { Id } from '../../db/index.js'
+import { Game, Id } from '../../db/index.js'
 import { gameCommands, manageGameEvents } from '../../utils/constants.js'
-import { sendResponse } from './utils.js'
+import { sendPersonalResponse, sendRoomResponse } from './utils.js'
 
 export function sendCreateGameResponse(ws: WebSocket, idGame: Id, idPlayer: Id) {
-  sendResponse(ws, manageGameEvents.createGame, {
+  sendPersonalResponse(ws, manageGameEvents.createGame, {
     idGame,
     idPlayer,
   })
 }
-export function sendTurnInfo(ws: WebSocket, currentPlayer: Id) {
-  sendResponse(ws, gameCommands.turn, {
-    currentPlayer,
+
+export function sendFinishResponse(ws: WebSocket, winnerPlayerId: Id) {
+  sendPersonalResponse(ws, manageGameEvents.finishGame, {
+    winPlayer: winnerPlayerId,
   })
 }
 
-export function sendFinishResponse(ws: WebSocket, winnerPlayerId: Id) {
-  sendResponse(ws, manageGameEvents.finishGame, {
-    winPlayer: winnerPlayerId,
+export function sendStartGameResponse(game: Game) {
+  sendRoomResponse(game, manageGameEvents.startGame, (player) => ({
+    ships: player.ships,
+    currentPlayerIndex: player.idPlayer,
+  }))
+}
+
+export function broadcastTurnInfo(game: Game, currentPlayer: Id) {
+  sendRoomResponse(game, gameCommands.turn, {
+    currentPlayer,
   })
 }
